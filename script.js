@@ -3,8 +3,12 @@ console.log(textbox);
 
 async function getData() {
   try {
+    const spinner = document.getElementById("spinner");
+    spinner.style.visibility = "visible";
+   
     let userValue = document.getElementById("textBox").value.trim();
     console.log(userValue);
+   
     const response = await fetch(
       `https://www.themealdb.com/api/json/v1/1/filter.php?i=${userValue}`
     );
@@ -13,7 +17,12 @@ async function getData() {
     }
     const data = await response.json();
     console.log(data);
-
+    
+    meals.innerHTML = ''; // Clear previous results
+    setTimeout(() => {
+      spinner.style.visibility = "hidden"; // Hide the spinner
+     
+    }, 1000); 
     data.meals.forEach((element) => {
       console.log(element.strMeal);
       const divMealName = document.createElement("div");
@@ -57,6 +66,9 @@ async function getData() {
       divMealName.appendChild(imgMeal);
       divMealName.appendChild(recipeButton);
 
+     
+
+      document.getElementById("textBox").value = "";
       //-----------------------------------------------------------
       recipeButton.addEventListener("click", async function () {
         try {
@@ -71,7 +83,17 @@ async function getData() {
           console.log(data1);
           
           const recipeDiv = document.createElement("div");
-          
+          const closeButton = document.createElement('button');
+          closeButton.innerHTML = '<i class="fa-solid fa-square-xmark fa-lg"></i>';
+          closeButton.style.backgroundColor = 'black';
+          closeButton.style.border = 'none';
+          closeButton.style.width = '70px';
+          closeButton.style.fontSize = '35px';
+          closeButton.style.marginLeft = '500px';
+          recipeDiv.appendChild(closeButton);
+          closeButton.addEventListener('click', () => {
+            recipeDiv.style.display = 'none';
+          });
           recipeDiv.style.border = "1px solid #ccc";
           recipeDiv.style.margin = "20px auto";
           recipeDiv.style.padding = "20px";
@@ -82,8 +104,7 @@ async function getData() {
           recipeDiv.style.borderRadius = "10px";
           recipeDiv.style.overflowY = "auto";
           recipeDiv.style.maxHeight = "600px";
-       /*  const closeButton = document.createElement("button");
-        <i class="fa-solid fa-rectangle-xmark fa-lg"></i> */
+     
           const main = document.querySelector("main");
           main.appendChild(recipeDiv);
 
@@ -150,6 +171,8 @@ async function getData() {
             recipeDiv.appendChild(h3);
             recipeDiv.appendChild(instruction);
             recipeDiv.appendChild(youtubeLink);
+
+            
           });
         } catch (error) {
           console.error("Error fetching data:", error);
